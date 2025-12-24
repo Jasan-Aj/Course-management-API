@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { createCourse, getUserCourse, joinCourse } from "../controllers/course.controller";
+import authorize from "../middlewares/auth.middleware";
 
 const courseRouter = Router();
 
@@ -13,9 +15,7 @@ courseRouter.get("/:id",(req, res)=>{
 });
 
 //add new course
-courseRouter.post("/",(req, res)=>{
-
-});
+courseRouter.post("/",authorize,createCourse);
 
 //update course
 courseRouter.patch("/:id",(req, res)=>{
@@ -27,9 +27,10 @@ courseRouter.delete("/:id",(req, res)=>{
 
 });
 
-//get specific users cources
-courseRouter.get("/user/:id",(req, res)=>{
+//join course
+courseRouter.post("/join/:id",authorize, joinCourse);
 
-});
+//get specific users cources
+courseRouter.get("/user/:id",authorize, getUserCourse);
 
 export default courseRouter;

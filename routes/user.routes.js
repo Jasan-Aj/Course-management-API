@@ -1,21 +1,14 @@
 import { Router } from "express";
+import { getUsers, getUser } from "../controllers/user.controller";
+import authorize from "../middlewares/auth.middleware";
 
 const userRouter = Router();
 
 //get all users 
-userRouter.get("/",(req, res)=>{
-    res.send("in users page")
-});
+userRouter.get("/",authorize,getUsers)
 
 //get specific user
-userRouter.get("/:id",(req, res)=>{
-
-});
-
-//add new user
-userRouter.post("/",(req, res)=>{
-
-});
+userRouter.get("/:id",authorize,getUser)
 
 //update user
 userRouter.patch("/:id",(req, res)=>{
