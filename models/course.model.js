@@ -15,15 +15,13 @@ const courseSchema = new mongoose.Schema({
         maxLength: 500
     },
     price: {
-        type: number,
+        type:mongoose.Schema.Types.Number,
         required: true,
-        enum: ['USD', 'EUR', 'RS'],
-        default: 'USD',
         min: 0
     },
     duration: {
         value: {
-            type: number,
+            type: mongoose.Schema.Types.Number,
             required: true,
             minLength: 1
         },
@@ -36,7 +34,7 @@ const courseSchema = new mongoose.Schema({
     topic: {
         type: mongoose.Schema.Types.ObjectId,
         ref:'Topic',
-        required: true,
+        required: false,
         index: true
     }
 },{timestamps: true});

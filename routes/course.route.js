@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createCourse, getUserCourse, joinCourse } from "../controllers/course.controller";
-import authorize from "../middlewares/auth.middleware";
+import { createCourse, getUserCourse, joinCourse } from "../controllers/course.controller.js";
+import authorize from "../middlewares/auth.middleware.js";
 
 const courseRouter = Router();
 

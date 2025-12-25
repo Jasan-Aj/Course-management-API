@@ -1,10 +1,10 @@
 import User from "../models/user.model.js"
 
-export const getusers = async (req, res, next)=>{
+export const getUsers = async (req, res, next)=>{
     try{
 
         const users = await User.find();
-        req.status(200).json({message: "sucessfully fetched users!"});
+        res.status(200).json({message: "sucessfully fetched users!", data: users});
 
     }catch(error){
         next(error);

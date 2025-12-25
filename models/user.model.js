@@ -22,14 +22,23 @@ const userSchema = new mongoose.Schema({
         minLenght: 8
     },
     enrolledCourses: [{
-        value: {
+        courseId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Course',
-            index: true
+            index: true,
+            required: true
         },
         startDate: {
             type: Date,
             required: true
+        },
+        progress:{
+            type: mongoose.Schema.Types.Number,
+            required: true,
+        },
+        completed:{
+            type: mongoose.Schema.Types.Boolean,
+            default: false
         }
     }]
 },{timestamps: true});

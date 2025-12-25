@@ -6,30 +6,26 @@ const authorize = async (req, res, next)=>{
     try{
         let token;
 
-        if(req.headers.authorization && req.headers.authorization.startswith('Bearer')){
-            token = req.headers.authorization.split(' ')[1];
+        if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+            token = req.headers.authorization.split(" ")[1];
         }
 
         if(!token){
-            const error = new Error("unauthorized");
-            error.statusCode = 401;
-            throw error;
+            return res.status(401).json({message: "unauthorize"});
         }
 
         const decoded = jwt.decode(token, JWT_SECRET);
-        const user = await User.findById(decode.userId);
+        const user = await User.findById(decoded.userId);
 
         if(!user){
-            const error = new Error("unauthorized");
-            error.statusCode = 401;
-            throw error;
+            return res.status(401).json({message: "unauthorized"});
         }
 
         req.user = user;
         next();
         
     }catch(error){
-        res.status(401).json({msg: "unauthorized", error: error.message});
+        res.status(401).json({msg: "unauthorized", error});
     }
 }
 
