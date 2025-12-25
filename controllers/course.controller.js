@@ -14,6 +14,107 @@ export const createCourse = async (req, res, next)=>{
     }
 }
 
+export const getAllCourse = async (req, res, next)=>{
+    try{
+        const courses = await Course.find();
+        res.status(200).json({
+            success:true,
+            data: courses
+        });
+
+    }catch(error){  
+        next(error);
+    }
+}
+
+export const getSpecificCourse = async (req, res, next)=>{
+    try{
+        const course = await Course.findById(req.params.id);
+        if(!course){
+            const error = new Error("Course does not exist");
+            error.satusCode = 404;
+            throw error;
+        }
+
+        res.status(200).json({
+            success:true,
+            data: course
+        });
+
+    }catch(error){
+        next(error);
+    }
+}
+
+export const updateCourse = async (req, res, next)=>{
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try{
+        const course = await Course.findById(req.params.id).session(session);
+        if(!course){
+            const error = new Error("course does not exist!");
+            error.statuscode = 404;
+            throw error;
+        }
+
+        Object.keys(req.body).map(key=>{
+            course[key] = req.body[key];
+        });
+        
+        await course.save({session});
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(200).json({
+            success: true,
+            data: course
+        });
+
+    }catch(error){
+        if(session.inTransaction()){
+            await session.abortTransaction();
+        }
+
+        session.endSession();
+        next(error);
+    }
+}
+
+export const deleteCourse = async (req, res, next)=>{
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try{
+
+        const course = await Course.findById(req.params.id).session(session);
+        if(!course){
+            const error = new Error("course does not exist!");
+            error.statuscode = 404;
+            throw error;
+        }
+
+        course.deleteOne({session});
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(200).json({
+            success: true,
+            message: "successfully deleted"
+        });
+
+    }catch(error){
+        if(session.inTransaction()){
+            await session.abortTransaction();
+        }
+
+        session.endSession();
+        next(error);
+    }
+}
+
 export const joinCourse = async (req, res, next)=>{
     const session = await mongoose.startSession();
     session.startTransaction();

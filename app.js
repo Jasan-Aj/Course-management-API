@@ -1,6 +1,6 @@
 import express from "express"
 import {PORT} from "./config/env.js"
-import courseRouter from "./routes/course.route.js";
+import courseRouter from "./routes/course.routes.js";
 import userRouter from "./routes/user.routes.js";
 import instructorRouter from "./routes/instructer.routes.js";
 import connectDatabse from "./database/mongodb.js";
