@@ -64,6 +64,8 @@ export const updateTopic = async (req, res, next)=>{
             data: topic
         });
 
+        
+
     }catch(error){
         await session.abortTransaction();
         session.endSession();
