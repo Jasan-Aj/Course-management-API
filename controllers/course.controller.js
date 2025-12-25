@@ -95,7 +95,7 @@ export const deleteCourse = async (req, res, next)=>{
             throw error;
         }
 
-        course.deleteOne({session});
+        await course.deleteOne({session});
 
         await session.commitTransaction();
         session.endSession();

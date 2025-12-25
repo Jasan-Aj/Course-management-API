@@ -7,6 +7,7 @@ import connectDatabse from "./database/mongodb.js";
 import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import topicRouter from "./routes/topic.routes.js";
+import errorMiddleware from "./middlewares/error.middleware.js";
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.use("/api/v1/courses",courseRouter);
 app.use("/api/v1/instructors",instructorRouter);
 app.use("/api/v1/auth",authRouter);
 app.use("/api/v1/topics",topicRouter);
+
+app.use(errorMiddleware);
 
 app.listen(PORT,async ()=>{
  await connectDatabse();
