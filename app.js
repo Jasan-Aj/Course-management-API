@@ -19,7 +19,7 @@ app.get("/",(req, res)=>{
 });
 
 app.use("/api/v1/users",userRouter);
-app.use("/api/v1/courses",courseRouter);
+app.use("/api/v1/cources",courseRouter);
 app.use("/api/v1/instructors",instructorRouter);
 app.use("/api/v1/auth",authRouter);
 app.use("/api/v1/topics",topicRouter);
