@@ -40,7 +40,15 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.Boolean,
             default: false
         }
-    }]
+    }],
+    role: {
+        type: String,
+        required: [true, "Role is required"],
+        enum: {
+            values: ['admin', 'user']
+        },
+        default: 'user'
+    }
 },{timestamps: true});
 
 const User = mongoose.model("User", userSchema);
