@@ -23,12 +23,12 @@ instructorRouter.patch("/:id", authorize, adminMiddleware, updateInstructor);
 instructorRouter.delete("/:id", authorize, adminMiddleware, deleteInstructor);
 
 //get specific instructors all cources
-instructorRouter.get("/user/:id", authorize, adminMiddleware, getInstructorsCourses);
+instructorRouter.get("/course/:id", authorize, adminMiddleware, getInstructorsCourses);
 
 //insert course
 instructorRouter.post("/course/:id", authorize, adminMiddleware, insertCourse);
 
 //remove course
-instructorRouter.delete("/course/:id", authorize, adminMiddleware, insertCourse);
+instructorRouter.delete("/course/:id", authorize, adminMiddleware, removeCourse);
 
 export default instructorRouter;

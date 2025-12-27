@@ -191,6 +191,7 @@ export const exitCourse = async (req, res, next)=>{
 
         res.status(200).json({
             success: true,
+            message: "successfully deleted",
             data: req.user.enrolledCourses
         });
 

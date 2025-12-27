@@ -148,7 +148,7 @@ export const deleteInstructor = async (req, res, next)=>{
 export const getInstructorsCourses = async (req, res, next)=>{
     try{
 
-        const instructor = await Instructor.findById(req.params.id).session(session);
+        const instructor = await Instructor.findById(req.params.id);
 
         if(!instructor){
             const error = new Error("instrcutor not exist");
@@ -156,16 +156,15 @@ export const getInstructorsCourses = async (req, res, next)=>{
             throw error;
         }
 
-        const cources = [];
-
-        instructor.course.map(async (id)=>{
-            const course = await Course.findById(id.toString());
-            cources.push(course)
+        const coursePromises = instructor.course.map(async (id)=>{
+            return await Course.findById(id);
         });
+
+        const courses = await Promise.all(coursePromises);
 
         res.status(200).send({
             success: true,
-            data: cources
+            data: courses
         });
 
     }catch(error){
@@ -201,7 +200,7 @@ export const insertCourse = async (req, res, next)=>{
             throw error;
         }
 
-        const isCourseIdAlreadyExist = instructor.course.map(id => id.toString() === req.params.id.toString());
+        const isCourseIdAlreadyExist = instructor.course.some(id => id.toString() === course._id.toString());
         
         if(isCourseIdAlreadyExist){
             const error = new Error("course already exist");
@@ -225,6 +224,7 @@ export const insertCourse = async (req, res, next)=>{
             await session.abortTransaction();
         }
         session.endSession();
+        next(error);
     }
 }
 
@@ -249,15 +249,17 @@ export const removeCourse = async (req, res, next)=>{
         }
 
         const course = await Course.findById(req.body.courseId).session(session);
-        
+      
         if(!course){
             const error = new Error("course not exist");
             error.statusCode = 404;
             throw error;
         }
 
-        const isCourseIdExist = instructor.course.map(id => id.toString() === req.params.id.toString());
-        
+        const isCourseIdExist = instructor.course.some(id => {
+            return id.toString() === course._id.toString();
+        });
+
         if(!isCourseIdExist){
             const error = new Error("course does not exist");
             error.statusCode = 404;
@@ -265,9 +267,12 @@ export const removeCourse = async (req, res, next)=>{
         }
 
         const courseArray = [...instructor.course];
-        courseArray.pop(course._id);
+        
+        const filteredCourses = courseArray.filter(id => 
+            id.toString() !== course._id.toString()
+        );
 
-        instructor.course = courseArray;
+        instructor.course = filteredCourses;
 
         await instructor.save({session});
 
@@ -284,5 +289,6 @@ export const removeCourse = async (req, res, next)=>{
             await session.abortTransaction();
         }
         session.endSession();
+        next(error);
     }
 }
