@@ -1,31 +1,24 @@
 import { Router } from "express";
+import { getAllInstructors, getInstructor, updateInstructor, deleteInstructor, addInstructor } from "../controllers/instructor.controller";
+import authorize from "../middlewares/auth.middleware.js";
+import adminMiddleware from "../middlewares/admin.middleware.js"
 
 const instructorRouter = Router();
 
 //get all instructors 
-instructorRouter.get("/",(req, res)=>{
-    res.send("in courses page");
-});
+instructorRouter.get("/", authorize, adminMiddleware, getAllInstructors);
 
 //get specific instructor
-instructorRouter.get("/:id",(req, res)=>{
-
-});
+instructorRouter.get("/:id", authorize, adminMiddleware, getInstructor);
 
 //add new instructor
-instructorRouter.post("/",(req, res)=>{
-
-});
+instructorRouter.post("/", authorize, adminMiddleware, addInstructor);
 
 //update instructor
-instructorRouter.patch("/:id",(req, res)=>{
-
-});
+instructorRouter.patch("/:id", authorize, adminMiddleware, updateInstructor);
 
 //delete instructor
-instructorRouter.delete("/:id",(req, res)=>{
-
-});
+instructorRouter.delete("/:id", authorize, adminMiddleware, deleteInstructor);
 
 //get specific instructors all cources
 instructorRouter.get("/user/:id",(req, res)=>{
