@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { getAllInstructors, getInstructor, updateInstructor, deleteInstructor, addInstructor } from "../controllers/instructor.controller";
+import { getAllInstructors, getInstructor, updateInstructor, deleteInstructor, addInstructor,
+     getInstructorsCourses, insertCourse, removeCourse } from "../controllers/instructor.controller.js";
+
 import authorize from "../middlewares/auth.middleware.js";
 import adminMiddleware from "../middlewares/admin.middleware.js"
 
@@ -21,8 +23,12 @@ instructorRouter.patch("/:id", authorize, adminMiddleware, updateInstructor);
 instructorRouter.delete("/:id", authorize, adminMiddleware, deleteInstructor);
 
 //get specific instructors all cources
-instructorRouter.get("/user/:id",(req, res)=>{
+instructorRouter.get("/user/:id", authorize, adminMiddleware, getInstructorsCourses);
 
-});
+//insert course
+instructorRouter.post("/course/:id", authorize, adminMiddleware, insertCourse);
+
+//remove course
+instructorRouter.delete("/course/:id", authorize, adminMiddleware, insertCourse);
 
 export default instructorRouter;

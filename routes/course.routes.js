@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { createCourse, getUserCourse, joinCourse, getAllCourse, getSpecificCourse, updateCourse, deleteCourse } from "../controllers/course.controller.js";
+import { createCourse, getUserCourse, joinCourse, getAllCourse, getSpecificCourse,
+     updateCourse, deleteCourse, exitCourse } from "../controllers/course.controller.js";
+
 import authorize from "../middlewares/auth.middleware.js";
 import adminMiddleware from "../middlewares/admin.middleware.js";
 
@@ -22,6 +24,9 @@ courseRouter.delete("/:id",authorize, adminMiddleware, deleteCourse);
 
 //join course
 courseRouter.post("/join/:id",authorize, joinCourse);
+
+//exit from course
+courseRouter.delete("/exit/:id",authorize, exitCourse);
 
 //get specific users cources
 courseRouter.get("/user/:id",authorize, getUserCourse);

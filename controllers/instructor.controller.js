@@ -40,7 +40,6 @@ export const addInstructor = async (req, res, next)=>{
     session.startTransaction();
 
     try{
-
         const {name, courseId} = req.body;
         const course = await Course.findById(courseId);
 
@@ -50,7 +49,7 @@ export const addInstructor = async (req, res, next)=>{
             throw error;
         }
 
-        const instructor = await Instructor.create({name, course:course._id}).session(session);
+        const instructor = await Instructor.create({name, course: [course._id]});
 
         await session.commitTransaction();
         session.endSession();
@@ -75,7 +74,7 @@ export const updateInstructor = async (req, res, next)=>{
     session.startTransaction();
 
     try{
-
+        
         const instructor = await Instructor.findById(req.params.id).session(session);
 
         if(!instructor){
@@ -84,22 +83,10 @@ export const updateInstructor = async (req, res, next)=>{
             throw error;
         }
 
-        if(Object.keys(req.body).length() < 0){
+        if(Object.keys(req.body).length < 0){
             const error = new Error("no data to update instructor");
             error.statusCode = 400;
             throw error;
-        }
-
-        if(req.body.courseId){
-            const course = await Course.findById(req.body.courseId).session(session);
-
-            if(!course){
-                const error = new Error("course not exist");
-                error.statusCode = 404;
-                throw error;
-            }
-
-            instructor.course = [...instructor.course, course._id];
         }
 
         if(req.body.name){
@@ -148,6 +135,148 @@ export const deleteInstructor = async (req, res, next)=>{
         res.status(201).json({
             success: true,
             message: "successfully deleted"
+        });
+
+    }catch(error){
+        if(session.inTransaction()){
+            await session.abortTransaction();
+        }
+        session.endSession();
+    }
+}
+
+export const getInstructorsCourses = async (req, res, next)=>{
+    try{
+
+        const instructor = await Instructor.findById(req.params.id).session(session);
+
+        if(!instructor){
+            const error = new Error("instrcutor not exist");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const cources = [];
+
+        instructor.course.map(async (id)=>{
+            const course = await Course.findById(id.toString());
+            cources.push(course)
+        });
+
+        res.status(200).send({
+            success: true,
+            data: cources
+        });
+
+    }catch(error){
+        next(error);
+    }
+}
+
+export const insertCourse = async (req, res, next)=>{
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try{
+
+        const instructor = await Instructor.findById(req.params.id).session(session);
+
+        if(!instructor){
+            const error = new Error("instrcutor not exist");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        if(!req.body.courseId){
+            const error = new Error("course id required");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const course = await Course.findById(req.body.courseId).session(session);
+        
+        if(!course){
+            const error = new Error("course not exist");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const isCourseIdAlreadyExist = instructor.course.map(id => id.toString() === req.params.id.toString());
+        
+        if(isCourseIdAlreadyExist){
+            const error = new Error("course already exist");
+            error.statusCode = 404;
+            throw error; 
+        }
+
+        instructor.course = [...instructor.course, course._id];
+        await instructor.save({session});
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(201).json({
+            success: true,
+            data: instructor
+        });
+
+    }catch(error){
+        if(session.inTransaction()){
+            await session.abortTransaction();
+        }
+        session.endSession();
+    }
+}
+
+export const removeCourse = async (req, res, next)=>{
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try{
+
+        const instructor = await Instructor.findById(req.params.id).session(session);
+
+        if(!instructor){
+            const error = new Error("instrcutor not exist");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        if(!req.body.courseId){
+            const error = new Error("course id required");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const course = await Course.findById(req.body.courseId).session(session);
+        
+        if(!course){
+            const error = new Error("course not exist");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const isCourseIdExist = instructor.course.map(id => id.toString() === req.params.id.toString());
+        
+        if(!isCourseIdExist){
+            const error = new Error("course does not exist");
+            error.statusCode = 404;
+            throw error; 
+        }
+
+        const courseArray = [...instructor.course];
+        courseArray.pop(course._id);
+
+        instructor.course = courseArray;
+
+        await instructor.save({session});
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(201).json({
+            success: true,
+            data: instructor
         });
 
     }catch(error){

@@ -169,17 +169,56 @@ export const joinCourse = async (req, res, next)=>{
     }
 }
 
+export const exitCourse = async (req, res, next)=>{
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try{
+
+        const user_id = req.user._id;
+        const course_id = req.params.id;
+
+        const courses = [...req.user.enrolledCourses];
+        courses.pop({courseId:req.params.id});
+
+        req.user.enrolledCourses = courses;
+
+        //save
+        await req.user.save({session});
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(200).json({
+            success: true,
+            data: req.user.enrolledCourses
+        });
+
+    }catch(error){
+        await session.abortTransaction();
+        session.endSession();
+        next(error);
+    }
+}
+
 export const getUserCourse = async (req, res, next)=>{
     try{
 
-        if(req.params.id != req.user._id){
+        if(req.user.role !== "admin" && req.params.id != req.user._id){
             const error = new Error("Not authorized");
             error.statusCode = 402;
             throw error;
         }
 
-        const cources = await Course.find({...req.user.enrolledCourses.userId});
-        res.status(200).json({success: true, data: cources});
+        const user = await User.findById(req.params.id);
+
+        const coursePromises = user.enrolledCourses.map(async (course) => {
+            return await Course.findById(course.courseId);
+        });
+
+        const courses = await Promise.all(coursePromises);
+
+        res.status(200).json({success: true, data: courses});
 
     }catch(error){
         next(error);
