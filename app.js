@@ -30,7 +30,6 @@ app.get("/",(req, res)=>{
     res.send("working on")
 });
 
-
 app.listen(PORT,async ()=>{
  await connectDatabse();
 });
