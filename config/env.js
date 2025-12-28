@@ -1,12 +1,23 @@
 import { config } from "dotenv";
 
-config({path: `.env`});
+const isVercel = process.env.VERCEL || process.env.VERCEL_ENV;
+
+if (!isVercel) {
+  const result = config({ path: `.env` });
+  
+  if (result.error) {
+    console.warn("No .env file found, using process.env variables");
+  }
+} else {
+  console.log("Running in Vercel environment, using Vercel environment variables");
+}
 
 export const {
-    PORT, 
-    NODE_ENV, 
-    DB_URI,
-    JWT_SECRET,
-    JWT_EXPIRES_IN,
-    ARCJET_KEY,ARCJET_ENV
-} = process.env
+  PORT = 3000,
+  NODE_ENV = "development",
+  DB_URI,
+  JWT_SECRET,
+  JWT_EXPIRES_IN = "7d",
+  ARCJET_KEY,
+  ARCJET_ENV,
+} = process.env;
