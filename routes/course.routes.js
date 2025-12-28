@@ -8,7 +8,7 @@ import adminMiddleware from "../middlewares/admin.middleware.js";
 const courseRouter = Router();
 
 //get all corces 
-courseRouter.get("/",authorize, getAllCourse);
+courseRouter.get("/",getAllCourse);
 
 //get specific course
 courseRouter.get("/:id",authorize, getSpecificCourse);

@@ -27,7 +27,7 @@ app.use("/api/v1/topics",topicRouter);
 app.use(errorMiddleware);
 
 app.get("/",(req, res)=>{
-    res.send("working on")
+    res.send("wellcome to course management API")
 });
 
 app.listen(PORT,async ()=>{
