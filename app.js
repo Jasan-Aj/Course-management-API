@@ -1,5 +1,5 @@
 import express from "express"
-import {PORT} from "./config/env.js"
+import {PORT, NODE_ENV, DB_URI} from "./config/env.js"
 import courseRouter from "./routes/course.routes.js";
 import userRouter from "./routes/user.routes.js";
 import instructorRouter from "./routes/instructer.routes.js";
@@ -27,7 +27,7 @@ app.use("/api/v1/topics",topicRouter);
 app.use(errorMiddleware);
 
 app.get("/",(req, res)=>{
-    res.send("wellcome to course management API")
+    res.send(`wellcome to course management API ${NODE_ENV, DB_URI}`)
 });
 
 app.listen(PORT,async ()=>{
