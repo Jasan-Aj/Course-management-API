@@ -10,6 +10,10 @@ const courseRouter = Router();
 //get all corces 
 courseRouter.get("/",getAllCourse);
 
+courseRouter.get("/test",(req, res)=>{
+     res.send("this is test page");
+})
+
 //get specific course
 courseRouter.get("/:id",authorize, getSpecificCourse);
 
