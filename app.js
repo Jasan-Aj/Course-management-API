@@ -9,25 +9,19 @@ import cookieParser from "cookie-parser";
 import topicRouter from "./routes/topic.routes.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import arcjetMiddleWare from "./middlewares/arcjet.middleware.js";
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 const app = express();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(arcjetMiddleWare);
-
-app.use(async (req, res, next) => {
-  try {
-    await connectDatabse();
-    next();
-  } catch (error) {
-    res.status(503).json({ 
-      success: false, 
-      message: 'Service temporarily unavailable' 
-    });
-  }
-});
+app.use(express.static(join(__dirname, 'public')));
 
 app.use("/api/v1/users",userRouter);
 app.use("/api/v1/courses",courseRouter);
@@ -37,10 +31,26 @@ app.use("/api/v1/topics",topicRouter);
 
 app.use(errorMiddleware);
 
-app.get("/",(req, res)=>{
-    res.send(`wellcome to course management API`)
+app.get("/", (req, res) => {
+
+  res.sendFile(join(__dirname, "public/index.html"));
+
 });
 
-app.listen(PORT);
+const startServer = async () => {
+  try {
+    const dbConnection = await connectDatabse();
+    console.log("Database connected successfully");
+
+    const server = app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT} in ${NODE_ENV} mode`);
+    });
+
+  } catch (error) {
+    console.error("Failed to connect to DB or start server:", error);
+  }
+};
+
+startServer();
 
 export default app;
