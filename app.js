@@ -17,6 +17,17 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(arcjetMiddleWare);
 
+app.use(async (req, res, next) => {
+  try {
+    await connectDatabse();
+    next();
+  } catch (error) {
+    res.status(503).json({ 
+      success: false, 
+      message: 'Service temporarily unavailable' 
+    });
+  }
+});
 
 app.use("/api/v1/users",userRouter);
 app.use("/api/v1/courses",courseRouter);
@@ -27,10 +38,9 @@ app.use("/api/v1/topics",topicRouter);
 app.use(errorMiddleware);
 
 app.get("/",(req, res)=>{
-    res.send(`wellcome to course management API ${NODE_ENV, DB_URI}`)
+    res.send(`wellcome to course management API`)
 });
 
-app.listen(PORT,async ()=>{
-    console.log("in listen");
- await connectDatabse();
-});
+app.listen(PORT);
+
+export default app;
