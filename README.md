@@ -70,7 +70,7 @@ When a user joins the platform, the system automatically triggers a welcome emai
 <div align="center">
   <br />
     <a href="#" target="_blank">
-      <img src="https://via.placeholder.com/1200x400/1e293b/ffffff?text=Course+Management+API" alt="Course Management API">
+      <img src="https://github.com/Jasan-Aj/Course-management-API/blob/main/public/My%20First%20Board%20(7).jpg" alt="Course Management API">
     </a>
   <br />
 </div>
