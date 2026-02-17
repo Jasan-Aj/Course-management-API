@@ -1,7 +1,7 @@
 <div align="center">
   <br />
     <a href="#" target="_blank">
-      <img src="https://via.placeholder.com/1200x400/1e293b/ffffff?text=Course+Management+API" alt="Course Management API Banner">
+      <img src="https://github.com/Jasan-Aj/Course-management-API/blob/main/public/Black%20and%20Blue%20Neon%20Cyber%20Monday%20Banner.png" alt="Course Management API Banner">
     </a>
   <br />
 
