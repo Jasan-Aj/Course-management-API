@@ -39,6 +39,9 @@ const userSchema = new mongoose.Schema({
         completed:{
             type: mongoose.Schema.Types.Boolean,
             default: false
+        },lastAccessed:{
+            type: Date,
+            default: Date.now
         }
     }],
     role: {

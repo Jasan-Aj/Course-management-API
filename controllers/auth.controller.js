@@ -31,6 +31,14 @@ export const signUp = async (req, res, next)=>{
     await session.commitTransaction();
     session.endSession();
 
+    await inngest.send({
+      name: "user/created",
+      data: {
+        email: newUsers[0].email,
+        name: newUsers[0].name
+      }
+    })
+
     res.status(201).json({
       success: true,
       msg: "sucessfully created new user",

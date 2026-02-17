@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Course from "../models/course.model.js";
 import User from "../models/user.model.js"
+import { inngest } from "../config/inngest.js";
 
 export const createCourse = async (req, res, next)=>{
     try{
@@ -125,8 +126,8 @@ export const joinCourse = async (req, res, next)=>{
         const course_id = req.params.id;
         
         //check course available
-        const isCourseAvailabe = await Course.findById(course_id).session(session);
-        if(!isCourseAvailabe){
+        const course = await Course.findById(course_id).session(session);
+        if(!course){
             const error = new Error("Course not exist");
             error.statusCode = 404;
             throw error;
@@ -156,6 +157,14 @@ export const joinCourse = async (req, res, next)=>{
 
         await session.commitTransaction();
         session.endSession();
+
+        await inngest.send({
+            name: "course/enrolled",
+            data: {
+                email: req.user.email,
+                name: course.name
+            }
+        })
 
         res.status(200).json({
             success: true,

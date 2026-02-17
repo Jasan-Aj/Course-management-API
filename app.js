@@ -11,6 +11,8 @@ import errorMiddleware from "./middlewares/error.middleware.js";
 import arcjetMiddleWare from "./middlewares/arcjet.middleware.js";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import workflowRouter from "./routes/workflow.routes.js"
+import inngestRoutes from "./routes/inngest.routes.js";
 
 const app = express();
 
@@ -28,7 +30,8 @@ app.use("/api/v1/courses",courseRouter);
 app.use("/api/v1/instructors",instructorRouter);
 app.use("/api/v1/auth",authRouter);
 app.use("/api/v1/topics",topicRouter);
-
+app.use("/api/v1/workflows",workflowRouter);
+app.use("/api/inngest", inngestRoutes);
 app.use(errorMiddleware);
 
 app.get("/", (req, res) => {
